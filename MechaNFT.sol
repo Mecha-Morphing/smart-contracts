@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -12,16 +13,17 @@ import "@openzeppelin/contracts/utils/Counters.sol";
  * @dev stand ERC721 Token without tokenUri. The game server use tokenId to link application
  * which supply API to retireve tokenUri.
  */
-contract MechaNFT is ERC721Enumerable, ERC721Pausable, Ownable, AccessControl {
+contract MechaNFT is ERC721Enumerable, ERC721Pausable, ERC721URIStorage, Ownable, AccessControl {
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
+    string private baseURI;
+
     constructor() ERC721("MechaNFT", "MNFT") {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        // _setupRole(MINTER_ROLE, _msgSender());
     }
 
     /**
@@ -38,9 +40,46 @@ contract MechaNFT is ERC721Enumerable, ERC721Pausable, Ownable, AccessControl {
 
         _mint(to, newTokenId);
 
-        //_setTokenURI(newTokenId, Strings.fromUint256(newTokenId));
-
         return newTokenId;
+    }
+
+    function burn(uint256 tokenId) public {
+        require(hasMinterRole(msg.sender), "Caller is not a minter role");
+        _burn(tokenId);
+    }
+
+    function _burn(
+        uint256 tokenId
+    ) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+    public view override(ERC721URIStorage, ERC721)
+    returns (string memory) {
+        return ERC721URIStorage.tokenURI(tokenId);
+    }
+
+    function setBaseURI(string memory baseURI_) public onlyOwner {
+        baseURI = baseURI_;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseURI;
+    }
+
+    function setTokenURI(uint256 tokenId, string memory _tokenURI) public {
+        require(ownerOf(tokenId) == msg.sender);
+        _setTokenURI(tokenId, _tokenURI);
+    }
+
+    function safeTransferNFT(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory _data
+    ) public {
+        super.safeTransferFrom(from, to, tokenId, _data);
     }
 
     /**
@@ -48,6 +87,8 @@ contract MechaNFT is ERC721Enumerable, ERC721Pausable, Ownable, AccessControl {
      */
     function setupMinterRole(address account) public {
         require(account != address(0));
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not a minter admin role");
+
         super._setupRole(MINTER_ROLE, account);
     }
 
@@ -60,8 +101,10 @@ contract MechaNFT is ERC721Enumerable, ERC721Pausable, Ownable, AccessControl {
      *
      * - the caller must have ``role``'s admin role.
      */
-    function revokeMinterRole(address account) public onlyRole(getRoleAdmin(DEFAULT_ADMIN_ROLE)) {
+    function revokeMinterRole(address account) public {
         require(account != address(0));
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not a minter admin role");
+
         super.revokeRole(MINTER_ROLE, account);
     }
 
@@ -105,7 +148,7 @@ contract MechaNFT is ERC721Enumerable, ERC721Pausable, Ownable, AccessControl {
         address to,
         uint256 tokenId
     ) internal
-    override(ERC721Enumerable, ERC721Pausable) {
+    override(ERC721Enumerable, ERC721Pausable, ERC721) {
         super._beforeTokenTransfer(from, to, tokenId);
     }
 
