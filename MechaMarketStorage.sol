@@ -61,8 +61,7 @@ contract MechaMarketStorage is AccessControl, ERC721Holder, Ownable {
     }
 
     function transferOwnerlessNFT(uint256 tokenId, address to) public onlyOwner {
-
-        // 只有无主的nft才可以转走
+        // only ownerless nft can be transfer
         if (_allGameItems[tokenId].currentOwner == address(0)) {
             _nftContract.transferFrom(address(this), to, tokenId);
         }
