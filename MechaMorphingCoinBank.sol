@@ -78,6 +78,8 @@ contract MechaMorphingCoinBank is Ownable, Pausable, EIP712 {
         uint256 withdrawId,
         bytes memory signature
     ) public whenNotPaused {
+        require(block.number - withdrawId <= 30, "outdated signature");
+
         address sender = msg.sender;
         bytes32 digest = _hashTypedDataV4(keccak256(abi.encode(
                 _WITHDRAW_TYPEHASH,

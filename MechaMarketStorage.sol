@@ -86,13 +86,16 @@ contract MechaMarketStorage is AccessControl, ERC721Holder, Ownable {
     function sold(uint256 tokenId, address previousOwner, address currentOwner) public {
         require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
 
-        GameItem memory gameItem = _allGameItems[tokenId];
-        gameItem.previousOwner = previousOwner;
-        gameItem.currentOwner = currentOwner;
-        gameItem.forSale = false;
-        gameItem.sold = true;
+//        GameItem memory gameItem = _allGameItems[tokenId];
+//        gameItem.previousOwner = previousOwner;
+//        gameItem.currentOwner = currentOwner;
+//        gameItem.forSale = false;
+//        gameItem.sold = true;
+//
+//        _allGameItems[tokenId] = gameItem;
 
-        _allGameItems[tokenId] = gameItem;
+        _nftContract.transferFrom(address(this), currentOwner, tokenId);
+        delete _allGameItems[tokenId];
     }
 
     function changeOwner(uint256 tokenId, address previousOwner, address currentOwner) public {

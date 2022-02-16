@@ -107,27 +107,27 @@ contract MechaMarket is EIP712("MechaMarket", "1"), Ownable {
         emit NFTWithdraw(tokenId, receiver);
     }
 
-    /**
-     * @dev switch between set for sale and set not for sale.
-     * @param tokenId tokenId uint256 ID of the token
-     */
-    function toggleForSale(uint256 tokenId) public {
-        require(msg.sender != address(0));
-
-        address tokenOwner = _storageContract.currentOwnerOf(tokenId);
-        require(tokenOwner != address(0), "NFT dosen't exist in market");
-        require(tokenOwner == msg.sender, "The owner of NFT is not msg.sender");
-
-        // if token's forSale is false make it true and vice versa
-        bool oldSaleFlag = _storageContract.saleStatusOf(tokenId);
-        _storageContract.changeSaleStatus(tokenId, !oldSaleFlag);
-
-        if (oldSaleFlag) {
-            emit NFTDownShelf(tokenId, tokenOwner);
-        } else {
-            emit NFTUpShelf(tokenId, tokenOwner, _storageContract.priceOf(tokenId));
-        }
-    }
+//    /**
+//     * @dev switch between set for sale and set not for sale.
+//     * @param tokenId tokenId uint256 ID of the token
+//     */
+//    function toggleForSale(uint256 tokenId) public {
+//        require(msg.sender != address(0));
+//
+//        address tokenOwner = _storageContract.currentOwnerOf(tokenId);
+//        require(tokenOwner != address(0), "NFT dosen't exist in market");
+//        require(tokenOwner == msg.sender, "The owner of NFT is not msg.sender");
+//
+//        // if token's forSale is false make it true and vice versa
+//        bool oldSaleFlag = _storageContract.saleStatusOf(tokenId);
+//        _storageContract.changeSaleStatus(tokenId, !oldSaleFlag);
+//
+//        if (oldSaleFlag) {
+//            emit NFTDownShelf(tokenId, tokenOwner);
+//        } else {
+//            emit NFTUpShelf(tokenId, tokenOwner, _storageContract.priceOf(tokenId));
+//        }
+//    }
 
     function changeNFTPrice(uint256 tokenId, uint256 newPrice) public {
         require(msg.sender != address(0));
@@ -135,7 +135,7 @@ contract MechaMarket is EIP712("MechaMarket", "1"), Ownable {
         address tokenOwner = _storageContract.currentOwnerOf(tokenId);
         require(tokenOwner != address(0), "NFT dosen't exist in market");
         require(tokenOwner == msg.sender, "The owner of NFT is not msg.sender");
-        require(_storageContract.saleStatusOf(tokenId) == false, "NFT is on sale, can not modify price");
+        // require(_storageContract.saleStatusOf(tokenId) == false, "NFT is on sale, can not modify price");
 
         // update token's price with new price
         _storageContract.changePrice(tokenId, newPrice);

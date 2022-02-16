@@ -166,9 +166,9 @@ contract MechaNFTMinter is Pausable, Ownable {
         }
 
         if (itemType == 0) {//mint weapon
-            _mintedWeapon.add(1);
+            _mintedWeapon = _mintedWeapon.add(1);
         } else if (itemType == 1) {// mint mecha
-            _mintedMecha.add(1);
+            _mintedMecha = _mintedMecha.add(1);
         }
 
         return tokenId;
