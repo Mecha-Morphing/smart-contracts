@@ -60,12 +60,12 @@ contract MechaMarketStorage is AccessControl, ERC721Holder, Ownable {
         delete _allGameItems[tokenId];
     }
 
-    function transferOwnerlessNFT(uint256 tokenId, address to) public onlyOwner {
-        // only ownerless nft can be transfer
-        if (_allGameItems[tokenId].currentOwner == address(0)) {
-            _nftContract.transferFrom(address(this), to, tokenId);
-        }
-    }
+//    function transferOwnerlessNFT(uint256 tokenId, address to) public onlyOwner {
+//        // only ownerless nft can be transfer
+//        if (_allGameItems[tokenId].currentOwner == address(0)) {
+//            _nftContract.transferFrom(address(this), to, tokenId);
+//        }
+//    }
 
     function addGameItem(uint256 tokenId, address from, uint256 price) public {
         require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
@@ -97,41 +97,32 @@ contract MechaMarketStorage is AccessControl, ERC721Holder, Ownable {
         delete _allGameItems[tokenId];
     }
 
-    function changeOwner(uint256 tokenId, address previousOwner, address currentOwner) public {
-        require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
-
-        GameItem memory gameItem = _allGameItems[tokenId];
-        gameItem.previousOwner = previousOwner;
-        gameItem.currentOwner = currentOwner;
-
-        _allGameItems[tokenId] = gameItem;
-    }
+//    function changeOwner(uint256 tokenId, address previousOwner, address currentOwner) public {
+//        require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
+//
+//        GameItem memory gameItem = _allGameItems[tokenId];
+//        gameItem.previousOwner = previousOwner;
+//        gameItem.currentOwner = currentOwner;
+//
+//        _allGameItems[tokenId] = gameItem;
+//    }
 
     function currentOwnerOf(uint256 tokenId) public view returns (address) {
         return _allGameItems[tokenId].currentOwner;
-    }
-
-    function changeSoldStatus(uint256 tokenId, bool soldStatus) public {
-        require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
-
-        GameItem memory gameItem = _allGameItems[tokenId];
-        gameItem.sold = soldStatus;
-
-        _allGameItems[tokenId] = gameItem;
     }
 
     function soldStatusOf(uint256 tokenId) public view returns (bool) {
         return _allGameItems[tokenId].sold;
     }
 
-    function changeSaleStatus(uint256 tokenId, bool saleStatus) public {
-        require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
-
-        GameItem memory gameItem = _allGameItems[tokenId];
-        gameItem.forSale = saleStatus;
-
-        _allGameItems[tokenId] = gameItem;
-    }
+//    function changeSaleStatus(uint256 tokenId, bool saleStatus) public {
+//        require(hasRole(MARKET_ROLE, msg.sender), "Caller is not a market role");
+//
+//        GameItem memory gameItem = _allGameItems[tokenId];
+//        gameItem.forSale = saleStatus;
+//
+//        _allGameItems[tokenId] = gameItem;
+//    }
 
     function saleStatusOf(uint tokenId) public view returns (bool) {
         return _allGameItems[tokenId].forSale;

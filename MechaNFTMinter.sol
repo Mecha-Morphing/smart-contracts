@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "./MechaNFT.sol";
-import "./MechaMorphingCoin.sol";
 
 contract MechaNFTMinter is Pausable, Ownable {
 
@@ -146,6 +145,8 @@ contract MechaNFTMinter is Pausable, Ownable {
 
             tokenId = _mechaNFT.mint(player);
 
+            _mintedHeights[player] = block.number;
+
             _mintedAmountForWhitelist[player] = _mintedAmountForWhitelist[player].add(1);
 
             _wallet.transfer(msg.value);
@@ -193,7 +194,7 @@ contract MechaNFTMinter is Pausable, Ownable {
     }
 
     function modifyMintedWeaponPrice(uint256 newMintedPrice) public onlyOwner {
-        require(newMintedPrice > 0 && newMintedPrice < (10**10) * (10**18));
+        require(newMintedPrice > 0 && newMintedPrice < (10**6) * (10**18));
 
         _mintedWeaponPrice = newMintedPrice;
     }
@@ -203,7 +204,7 @@ contract MechaNFTMinter is Pausable, Ownable {
     }
 
     function modifyMintedMechaPrice(uint256 newMintedPrice) public onlyOwner {
-        require(newMintedPrice > 0 && newMintedPrice < (10**10) * (10**18));
+        require(newMintedPrice > 0 && newMintedPrice < (10**6) * (10**18));
 
         _mintedMechaPrice = newMintedPrice;
     }
@@ -219,7 +220,7 @@ contract MechaNFTMinter is Pausable, Ownable {
     }
 
     function modifyCapOfWeapon(uint256 newCapOfWeapon) public onlyOwner {
-        require(newCapOfWeapon > 0);
+        require(newCapOfWeapon > 0 && newCapOfWeapon >= _mintedWeapon, "must > 0 && >= _mintedWeapon");
 
         _capOfWeapon = newCapOfWeapon;
     }
@@ -232,14 +233,8 @@ contract MechaNFTMinter is Pausable, Ownable {
         return _mintedWeapon;
     }
 
-    function modifyMaxMechaForWhitelist(uint256 newCapOfMecha) public onlyOwner {
-        require(newCapOfMecha > 0);
-
-        _capOfMecha = newCapOfMecha;
-    }
-
     function modifyCapOfMecha(uint256 newCapOfMecha) public onlyOwner {
-        require(newCapOfMecha > 0);
+        require(newCapOfMecha > 0 && newCapOfMecha >= _mintedMecha, "must > 0 && >= _mintedMecha");
 
         _capOfMecha = newCapOfMecha;
     }

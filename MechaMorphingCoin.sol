@@ -29,7 +29,7 @@ contract MechaMorphingCoin is ERC20, Ownable {
     }
 
     /**
-     *  @dev 精度到token的个数
+     *  mint more
      */
     function mint(uint256 amount) public onlyOwner {
         super._mint(_msgSender(), amount * (10 ** uint256(decimals())));
