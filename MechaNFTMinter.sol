@@ -41,6 +41,10 @@ contract MechaNFTMinter is Pausable, Ownable {
     uint256 private _capOfWeapon;
     uint256 private _capOfMecha;
 
+    bool private _weaponEnable = true;
+
+    bool private _mechaEnable = true;
+
     constructor(
         address mechaNFTContractAddress,
         address payable wallet_,
@@ -121,16 +125,16 @@ contract MechaNFTMinter is Pausable, Ownable {
     {
         require(itemType >= 0 && itemType <=1, "itemType is not supported");
 
-        if (itemType == 0) {//mint weapon
+        if (itemType == 0) {
+            //mint weapon
+            require(_weaponEnable, "weapon mint is disabled");
+            require(_mintedWeapon < _capOfWeapon, "not enough weapon");
             require(msg.value >= _mintedWeaponPrice, "minted weapon price too low");
-        } else if (itemType == 1) {// mint mecha
+        } else if (itemType == 1) {
+            // mint mecha
+            require(_mechaEnable, "mecha mint is disabled");
+            require(_mintedMecha < _capOfMecha, "not enough mecha");
             require(msg.value >= _mintedMechaPrice, "minted mecha price too low");
-        }
-
-        if (itemType == 0) {//mint weapon
-            require(_mintedWeapon < _capOfWeapon);
-        } else if (itemType == 1) {// mint mecha
-            require(_mintedMecha < _capOfMecha);
         }
 
         address player = msg.sender;
@@ -320,6 +324,14 @@ contract MechaNFTMinter is Pausable, Ownable {
      */
     function unpause() public onlyOwner whenPaused whenStarted {
         super._unpause();
+    }
+
+    function setWeaponEnable(bool enable) public onlyOwner {
+        _weaponEnable = enable;
+    }
+
+    function setMechaEnable(bool enable) public onlyOwner {
+        _mechaEnable = enable;
     }
 
 }

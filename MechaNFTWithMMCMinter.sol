@@ -47,6 +47,10 @@ contract MechaNFTWithMMCMinter is Pausable, Ownable, EIP712 {
     bytes32 private immutable _COMBINE_MINT_TYPEHASH =
     keccak256("CombineMint(address sender,uint256 nonce,uint256 reservedTokenId,uint256 burnTokenId0,uint256 burnTokenId1,uint256 burnTokenId2,uint256 burnTokenId3,uint256 combineId)");
 
+    bool private _weaponEnable = true;
+
+    bool private _mechaEnable = true;
+
     constructor(
         address nftContractAddress,
         address mapeContractAddress,
@@ -109,8 +113,10 @@ contract MechaNFTWithMMCMinter is Pausable, Ownable, EIP712 {
 
         uint256 _price = 0;
         if (itemType == 0) {//mint weapon
+            require(_weaponEnable, "weapon mint is disabled");
             _price = _mintedWeaponPrice;
         } else if (itemType == 1) {// mint mecha
+            require(_mechaEnable, "mecha mint is disabled");
             _price = _mintedMechaPrice;
         }
 
@@ -269,4 +275,13 @@ contract MechaNFTWithMMCMinter is Pausable, Ownable, EIP712 {
         current = _nonce.current();
         _nonce.increment();
     }
+
+    function setWeaponEnable(bool enable) public onlyOwner {
+        _weaponEnable = enable;
+    }
+
+    function setMechaEnable(bool enable) public onlyOwner {
+        _mechaEnable = enable;
+    }
+
 }
