@@ -119,36 +119,36 @@ contract MechaMorphingCoinBank is Ownable, Pausable, EIP712 {
         super._unpause();
     }
 
-    function modifyMinWithdrawedAmount(uint256 minWithdrawedAmount_) public onlyOwner {
-        require(minWithdrawedAmount_ > 0);
-        _minWithdrawedAmount = minWithdrawedAmount_;
+    function modifyMinWithdrawedAmount(uint256 minAmount) public onlyOwner {
+        require(minAmount > 0 && minAmount <= _maxWithdrawedAmount, "bad min amount");
+        _minWithdrawedAmount = minAmount;
     }
 
     function minWithdrawedAmount() public view returns (uint256) {
         return _minWithdrawedAmount;
     }
 
-    function modifyMaxWithdrawedAmount(uint256 maxDepositedAmount_) public onlyOwner {
-        require(maxDepositedAmount_ > 0);
-        _maxDepositedAmount = maxDepositedAmount_;
+    function modifyMaxWithdrawedAmount(uint256 maxAmount) public onlyOwner {
+        require(maxAmount > 0 && maxAmount >= _minWithdrawedAmount, "bad max amount");
+        _maxWithdrawedAmount = maxAmount;
     }
 
     function maxWithdrawedAmount() public view returns (uint256) {
-        return _maxDepositedAmount;
+        return _maxWithdrawedAmount;
     }
 
-    function modifyMinDepositedAmount(uint256 minDepositedAmount_) public onlyOwner {
-        require(minDepositedAmount_ > 0);
-        _minDepositedAmount = minDepositedAmount_;
+    function modifyMinDepositedAmount(uint256 minAmount) public onlyOwner {
+        require(minAmount > 0 && minAmount <= _maxDepositedAmount, "bad min amount");
+        _minDepositedAmount = minAmount;
     }
 
     function minDepositedAmount() public view returns (uint256) {
         return _minDepositedAmount;
     }
 
-    function modifyMaxDepositedAmount(uint256 maxDepositedAmount_) public onlyOwner {
-        require(maxDepositedAmount_ > 0);
-        _maxDepositedAmount = maxDepositedAmount_;
+    function modifyMaxDepositedAmount(uint256 maxAmount) public onlyOwner {
+        require(maxAmount > 0 && maxAmount >= _minDepositedAmount, "bad max amount");
+        _maxDepositedAmount = maxAmount;
     }
 
     function maxDepositedAmount() public view returns (uint256) {

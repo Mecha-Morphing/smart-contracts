@@ -93,8 +93,10 @@ contract MechaMarketStorage is AccessControl, ERC721Holder, Ownable {
 //
 //        _allGameItems[tokenId] = gameItem;
 
-        _nftContract.transferFrom(address(this), currentOwner, tokenId);
+        // first, modify state
         delete _allGameItems[tokenId];
+        // than, call others
+        _nftContract.transferFrom(address(this), currentOwner, tokenId);
     }
 
 //    function changeOwner(uint256 tokenId, address previousOwner, address currentOwner) public {

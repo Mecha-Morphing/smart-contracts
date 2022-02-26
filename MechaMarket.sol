@@ -56,8 +56,8 @@ contract MechaMarket is EIP712("MechaMarket", "1"), Ownable {
         require(msg.sender != address(0), "bad msg sender");
         require(_storageContract.currentOwnerOf(tokenId) == address(0), "Token already transfered into NFT market");
 
-        _nftContract.transferFrom(msg.sender, address(_storageContract), tokenId);
         _storageContract.addGameItem(tokenId, msg.sender, price);
+        _nftContract.transferFrom(msg.sender, address(_storageContract), tokenId);
 
         emit NFTDeposite(tokenId, msg.sender, price);
     }
@@ -186,7 +186,7 @@ contract MechaMarket is EIP712("MechaMarket", "1"), Ownable {
     public
     onlyOwner
     {
-        require(newCommissionRate > 0 || newCommissionRate < 100, "commission's range [0, 100]");
+        require(newCommissionRate >= 0 && newCommissionRate < 100, "commission's range [0, 100)");
         _commissionRate = newCommissionRate;
     }
 
