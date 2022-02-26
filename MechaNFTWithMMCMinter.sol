@@ -120,20 +120,21 @@ contract MechaNFTWithMMCMinter is Pausable, Ownable, EIP712 {
             _price = _mintedMechaPrice;
         }
 
-        // 1. 玩家委托给平台方的交易手续费必须足够，否则不可以抽卡
+        // check mape balance
         uint256 approvedMAPE = _mechaExToken.allowance(player, address(this));
         uint256 requiredMAPE = _price.mul(_mapePercent).div(100);
         require(requiredMAPE < approvedMAPE, "approved MAPE is not enougth!");
 
+        // check mmc balance
         uint256 approvedMMC = _mechaMorphingCoin.allowance(player, address(this));
         uint256 requiredMMC = _price.mul(_mmcPercent).div(100);
         require(requiredMMC < approvedMMC, "approved MMC is not enougth!");
 
-        // 2. 从MAPE与MMC的委托账户里扣费用
+        // mape and mmc cost
         _mechaExToken.transferFrom(player, _wallet, requiredMAPE);
         _mechaMorphingCoin.transferFrom(player, _wallet, requiredMMC);
 
-        // 3. 创建NFT
+        // mint NFT
         uint256 tokenId = _mechaNFT.mint(player);
 
         emit MysteryBoxNFTCreate(tokenId, player, itemType);
