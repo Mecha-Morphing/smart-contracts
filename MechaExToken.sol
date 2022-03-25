@@ -14,7 +14,7 @@ contract MechaExToken is ERC20 {
     /**
      * @dev initial supply of tokens
      */
-    uint256 private INITIAL_SUPPLY = 10 ** 11;
+    uint256 private INITIAL_SUPPLY = 10 ** 8;
 
     /**
      * @dev Constructor that gives _msgSender() all of existing tokens.
